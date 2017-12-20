@@ -171,6 +171,7 @@ let g:airline#extensions#ale#enabled=1
 let g:airline#extensions#default#section_truncate_width={
   \ 'b': 79, 'x': 60, 'y': 45, 'z': 45, 'warning': 80, 'error': 80
   \ }
+let g:airline#extensions#tmuxline#enabled=0
 
 "" ALE Settings
 
@@ -209,7 +210,7 @@ let g:javascript_plugin_jsdoc=1
 let g:javascript_conceal_function="λ"
 
 "" Tmuxline settings
-let g:tmuxline_preset='full'
+" let g:tmuxline_preset='full'
 
 " Strip Whitespace on Save
 autocmd BufWritePre * :call StripTrailingWhitespaces()
