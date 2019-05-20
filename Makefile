@@ -70,6 +70,7 @@ postman: flags/postman
 
 # System Configuration
 gpg: flags/gpg
+polybar: flags/polybar
 gestures: flags/gestures
 hall-monitor: flags/hall-monitor
 libinput: flags/libinput
@@ -156,6 +157,37 @@ flags/i3: apt.i3 apt.i3lock apt.xautolock apt.rofi fonts-hack
 	@bash ./install/run-helper link "i3status.conf" "$(XDG_CONFIG_HOME)/i3status/config"
 	@bash ./install/run-helper link "rofi.rasi" "$(XDG_CONFIG_HOME)/rofi/config.rasi"
 	ln -sf "$(XDG_CONFIG_HOME)/i3/config" "flags/i3"
+
+flags/polybar: repository = https://github.com/jaagr/polybar
+flags/polybar:
+	sudo apt install --no-install-recommends \
+	  libcairo2-dev \
+	  libxcb1-dev \
+	  libxcb-util0-dev \
+	  libxcb-randr0-dev \
+	  libxcb-composite0-dev \
+	  python-xcbgen \
+	  xcb-proto \
+	  libxcb-image0-dev \
+	  libxcb-ewmh-dev \
+	  libxcb-icccm4-dev \
+	  libxcb-cursor-dev \
+	  libjsoncpp-dev \
+	  libpulse-dev \
+	  libnl-genl-3-dev
+	@# get latest tagged version
+	$(eval version = $(shell git ls-remote --tags --refs $(repository) | awk -F"[\t/]" 'END{print $$NF}'))
+	$(eval file = polybar-$(version).tar)
+	wget --directory-prefix="/tmp" --timestamping "$(repository)/releases/download/$(version)/$(file)"
+	tar --directory "/tmp" --extract --file  "/tmp/$(file)"
+	mkdir --parents "/tmp/polybar/build"
+	cd "/tmp/polybar/build" && cmake ..
+	make -C "/tmp/polybar/build" -j$$(nproc)
+	sudo make -C "/tmp/polybar/build" install
+	mkdir --parents "$(XDG_CONFIG_HOME)/polybar"
+	@bash ./install/run-helper link "polybar.ini" "$(XDG_CONFIG_HOME)/polybar/config"
+	@bash ./install/run-helper link "install/launch-polybar.sh" "$(XDG_CONFIG_HOME)/polybar/launch.sh"
+	-ln -sf "$$(which polybar)" "flags"
 
 flags/node:
 	curl --location https://git.io/n-install | N_PREFIX=$(XDG_DATA_HOME)/nodejs bash -s -- -n
