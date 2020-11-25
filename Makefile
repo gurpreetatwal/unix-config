@@ -264,10 +264,10 @@ flags/docker: flags/docker-credential-ecr-login
 flags/docker-credential-ecr-login:
 	@bash ./install/run-helper git-clone "https://github.com/awslabs/amazon-ecr-credential-helper" "/tmp/amazon-ecr-credential-helper"
 	make -C "/tmp/amazon-ecr-credential-helper" docker
-	cp "/tmp/amazon-ecr-credential-helper/bin/local/docker-credential-ecr-login" "$(HOME)/bin"
+	cp "/tmp/amazon-ecr-credential-helper/bin/local/docker-credential-ecr-login" "$(HOME)/.local/bin"
 	mkdir -p "$(HOME)/.docker"
 	@bash ./install/run-helper link "install/docker-config.json" "$(HOME)/.docker/config.json"
-	ln -sf "$(HOME)/bin/docker-credential-ecr-login" "flags"
+	ln -sf "$(HOME)/.local/bin/docker-credential-ecr-login" "flags"
 
 flags/docker-compose:
 	curl --location --silent --show-error https://github.com/docker/compose/releases/download/$(compose-version)/docker-compose-Linux-x86_64 -o $(HOME)/bin/docker-compose
